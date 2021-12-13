@@ -4,7 +4,7 @@
     {
         string Input();
         void Output(string s);
-        bool Exit(string answer, bool playOn);
+        bool Exit(string answer, bool running);
         void Clear();
     }
 }

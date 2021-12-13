@@ -4,13 +4,13 @@ namespace CleanCodeExamination.Views
 {
     public class ConsoleIO : IUserInterface
     {
-        public bool Exit(string answer,bool playOn)
+        public bool Exit(string answer,bool running)
         {
             if (answer != null && answer != "" && answer.Substring(0, 1) == "n")
             {
-                playOn = false;
+                running = false;
             }
-            return playOn;
+            return running;
         }
 
         public string Input()

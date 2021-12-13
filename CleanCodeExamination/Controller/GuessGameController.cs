@@ -1,4 +1,4 @@
-﻿using CleanCodeExamination.DAL;
+﻿using CleanCodeExamination.Repository;
 using CleanCodeExamination.Model;
 using CleanCodeExamination.Model.Games;
 using CleanCodeExamination.Views;
@@ -11,10 +11,10 @@ namespace CleanCodeExamination.Controller
     {
 		private readonly IUserInterface _ui;
 		private readonly IFileHandlerRepository _fh;
-		private readonly IBullsAndCows _bullsAndCows;
-        private readonly IHighOrLow _highOrLow;
+		private readonly BullsAndCows _bullsAndCows;
+        private readonly HighOrLow _highOrLow;
 
-        public GuessGameController(IUserInterface ui, IFileHandlerRepository fh, IBullsAndCows bullsAndCows, IHighOrLow highOrLow)
+        public GuessGameController(IUserInterface ui, IFileHandlerRepository fh, BullsAndCows bullsAndCows, HighOrLow highOrLow)
         {
 			_ui = ui;
 			_fh = fh;
@@ -26,27 +26,29 @@ namespace CleanCodeExamination.Controller
         private string UserName { get; set; }
         private int TotGuesses { get; set; }
 
+
         public void Run()
         {
             bool running = true;
+            UserName = GetUserName();
             do
             {
+                _ui.Clear();
                 PrintMenu();
                 var key = Console.ReadKey(true).Key;
-                UserName = GetUserName();
                 switch (key)
                 {
                     case ConsoleKey.D1:
-                        GameType = _bullsAndCows.GetType().Name;
-                        _ui.Output("Game: Bulls and cows!");
                         _ui.Clear();
-                        BullAndCowGame();
+                        _ui.Output("Game: Bulls and cows!");
+                        GameType = _bullsAndCows.GetType().Name;
+                        Play(_bullsAndCows);
                         break;
                     case ConsoleKey.D2:
+                        _ui.Clear();
                         GameType = _highOrLow.GetType().Name;
                         _ui.Output("Game: Higher or lower!");
-                        _ui.Clear();
-                        HighOrLowGame();
+                        Play(_highOrLow);
                         break;
                     default:
                         running = false;
@@ -58,27 +60,14 @@ namespace CleanCodeExamination.Controller
         }
 
         //Games
-        private void BullAndCowGame()
+        private void Play(IGuessGame guessGame)
         {
             bool running = true;
             do
             {
-                string goal = _bullsAndCows.CreateGoal();
+                string goal = guessGame.CreateGoal();
                 _ui.Output("New game:\n");
-                BCGuessHandler(goal);
-                _fh.SavePlayerData(UserName, TotGuesses, GameType);
-                PrintScoreBoard(_fh.ReadPlayerData(GameType));
-                PrintResult();
-            } while (ContinueOrExit(running));
-        }
-        private void HighOrLowGame()
-        {   
-            bool running = true;
-            do
-            {
-                string secretNumber = _highOrLow.CreateSecretNumber();
-                _ui.Output("New game:\n");
-                GuessNumberHandler(secretNumber);
+                GuessHandler(goal, guessGame);
                 _fh.SavePlayerData(UserName, TotGuesses, GameType);
                 PrintScoreBoard(_fh.ReadPlayerData(GameType));
                 PrintResult();
@@ -95,36 +84,20 @@ namespace CleanCodeExamination.Controller
             _ui.Output("Enter your user name:\n");
             return _ui.Input();
         }
-        private void GuessNumberHandler(string secretNumber) 
-        {
-            _ui.Output($"For practice, number is: {secretNumber}\n");
-            string guess = _ui.Input();
-            string guessResult = _highOrLow.CheckGuess(secretNumber,guess);
-            _ui.Output(guessResult);
-
-            TotGuesses = 1;
-            while (guessResult != "ok")
-            {
-                TotGuesses++;
-                guess = _ui.Input();
-                guessResult = _highOrLow.CheckGuess(secretNumber, guess);
-                _ui.Output(guessResult);
-            }
-        }
-        private void BCGuessHandler(string goal)
+        private void GuessHandler(string goal, IGuessGame guessGame)
         {
             _ui.Output($"For practice, number is: {goal}\n");
             string guess = _ui.Input();
-            string guessResult = _bullsAndCows.CheckBC(goal, guess);
+            string guessResult = guessGame.CheckGuess(goal, guess);
             _ui.Output(guessResult + "\n");
 
             TotGuesses = 1;
-            while (guessResult != "BBBB,")
+            while (guess != goal)
             {
                 TotGuesses++;
                 guess = _ui.Input();
                 _ui.Output(guess + "\n");
-                guessResult = _bullsAndCows.CheckBC(goal, guess);
+                guessResult = guessGame.CheckGuess(goal, guess);
                 _ui.Output(guessResult + "\n");
             }
         }
@@ -140,9 +113,9 @@ namespace CleanCodeExamination.Controller
         {
             _ui.Output($"Correct, it took {TotGuesses} guesses\nContinue? Press [Y/N]");
         }
-        private bool ContinueOrExit(bool run)
+        private bool ContinueOrExit(bool running)
         {
-            return _ui.Exit(_ui.Input(), run);
+            return _ui.Exit(_ui.Input(), running);
         }
        
     }

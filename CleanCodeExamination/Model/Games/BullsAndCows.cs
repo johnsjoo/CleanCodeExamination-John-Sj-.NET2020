@@ -1,8 +1,9 @@
-﻿using System;
+﻿using CleanCodeExamination.Model.Games;
+using System;
 
 namespace CleanCodeExamination.Model
 {
-    public class BullsAndCows : IBullsAndCows
+    public class BullsAndCows : IGuessGame
 	{
 		public string CreateGoal()
 		{
@@ -22,7 +23,7 @@ namespace CleanCodeExamination.Model
 			return goal;
 		}
 
-		public string CheckBC(string goal, string guess)
+		public string CheckGuess(string goal, string guess)
 		{
 			int cows = 0, bulls = 0;
 			guess += "    ";

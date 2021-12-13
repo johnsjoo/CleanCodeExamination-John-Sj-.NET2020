@@ -6,25 +6,24 @@ using System.Threading.Tasks;
 
 namespace CleanCodeExamination.Model.Games
 {
-    public class HighOrLow : IHighOrLow
+    public class HighOrLow : IGuessGame
     {
-        public string CreateSecretNumber() 
+        public string CreateGoal() 
         {
             Random randomGenerator = new();
-            string secretNumber = randomGenerator.Next(100).ToString();
-            return secretNumber;
+            return randomGenerator.Next(100).ToString();
         }
 
-        public string CheckGuess(string secretNumber,string guess)
+        public string CheckGuess(string goal,string guess)
         {
             int guessToInt = ConvertToInt(guess);
-            int secretNumbToInt = ConvertToInt(secretNumber);
+            int goalToInt = ConvertToInt(goal);
 
-            if (guessToInt < secretNumbToInt)
+            if (guessToInt < goalToInt)
             {
                 return "Higher";
             }
-            if (guessToInt > secretNumbToInt)
+            if (guessToInt > goalToInt) 
             {
                 return "Lower";
             }
@@ -34,7 +33,7 @@ namespace CleanCodeExamination.Model.Games
             }
         }
 
-        public int ConvertToInt(string number) 
+        private int ConvertToInt(string number)
         {
             return Convert.ToInt32(number);
         }

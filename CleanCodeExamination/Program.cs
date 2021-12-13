@@ -1,7 +1,7 @@
 ﻿using CleanCodeExamination.Controller;
 using CleanCodeExamination.Views;
 using CleanCodeExamination.Model;
-using CleanCodeExamination.DAL;
+using CleanCodeExamination.Repository;
 using CleanCodeExamination.Model.Games;
 
 namespace MooGame
@@ -13,9 +13,9 @@ namespace MooGame
 		{
 			IUserInterface ui = new ConsoleIO();
 			IFileHandlerRepository fh = new FileHandlerRepository();
-			IBullsAndCows bullsAndCows = new BullsAndCows();
-			IHighOrLow highOrLow = new HighOrLow();
-			GuessGameController controller = new(ui, fh, bullsAndCows, highOrLow);
+			var guessGameBC = new BullsAndCows();
+			var guessGameHL = new HighOrLow();
+			GuessGameController controller = new(ui,fh,guessGameBC,guessGameHL);
 			controller.Run();
 		}
 	}

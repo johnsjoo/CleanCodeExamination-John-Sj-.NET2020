@@ -1,53 +1,56 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using CleanCodeExamination.Model.Games;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CleanCodeExamination.Model.Tests
 {
     [TestClass()]
     public class CleanCodeExaminationTest
     {
-        IBullsAndCows guessGame;
+    
+        BullsAndCows bullsAndCows;
 
         [TestInitialize]
         public void Init()
         {
-            guessGame = new BullsAndCows();
+            bullsAndCows = new();
         }
 
         [TestMethod()]
         public void CreateGoalTest() 
         {
-            int goalLength = guessGame.CreateGoal().Length;
-            Assert.AreEqual(4, goalLength);
+            int goalLength = bullsAndCows.CreateGoal().Length;
+            int expected = 4;
+            Assert.AreEqual(expected, goalLength);
         }
 
         [TestMethod()]
-        public void CheckBCTest()
+        public void CheckGuessOnlyBullsTest()
         {
             string guess = "1234";
             string goal = "1234";
-            string result = guessGame.CheckBC(goal,guess);
-            string bulls = "BBBB";
-            Assert.AreEqual(bulls, result.Substring(0,4));
+            string expected = "BBBB";
+            string result = bullsAndCows.CheckGuess(goal, guess);
+            Assert.AreEqual(expected, result.Substring(0,4));
         }
 
         [TestMethod()]
-        public void CheckBCNoMatchTest()
+        public void CheckGuessNoMatchTest()
         {
             string guess = "1234";
             string goal = "5678";
-            string result = guessGame.CheckBC(goal, guess);
-            string bull = ",";
-            Assert.AreEqual(bull, result);
+            string expected = ",";
+            string result = bullsAndCows.CheckGuess(goal, guess);
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod()]
-        public void CheckCowsTest()
+        public void CheckGuessOnlyCowsTest()
         {
             string guess = "1234";
             string goal = "4321";
-            string result = guessGame.CheckBC(goal, guess);
-            string cows = "CCCC";
-            Assert.AreEqual(cows, result.Substring(1,4));
+            string expected = "CCCC";
+            string result = bullsAndCows.CheckGuess(goal, guess);
+            Assert.AreEqual(expected, result.Substring(1,4));
         }
     }
 }
