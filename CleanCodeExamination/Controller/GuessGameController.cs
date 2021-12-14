@@ -26,14 +26,13 @@ namespace CleanCodeExamination.Controller
         private string UserName { get; set; }
         private int TotGuesses { get; set; }
 
-
         public void Run()
         {
-            bool running = true;
+            bool run = true;
             UserName = GetUserName();
+            _ui.Clear();
             do
             {
-                _ui.Clear();
                 PrintMenu();
                 var key = Console.ReadKey(true).Key;
                 switch (key)
@@ -51,18 +50,16 @@ namespace CleanCodeExamination.Controller
                         Play(_highOrLow);
                         break;
                     default:
-                        running = false;
+                        run = false;
                         _ui.Clear();
                         _ui.Output("Invalid input");
                         break;
                 }
-            } while (!running);
+            } while (!run);
         }
-
-        //Games
         private void Play(IGuessGame guessGame)
         {
-            bool running = true;
+            bool run = true;
             do
             {
                 string goal = guessGame.CreateGoal();
@@ -71,10 +68,9 @@ namespace CleanCodeExamination.Controller
                 _fh.SavePlayerData(UserName, TotGuesses, GameType);
                 PrintScoreBoard(_fh.ReadPlayerData(GameType));
                 PrintResult();
-            } while (ContinueOrExit(running));
+            } while (ContinueOrExit(run));
         }
 
-        //HelpMethods
         private void PrintMenu()
         {
             _ui.Output("Press key [1] for Bulls and cows \nPress key [2] for Higher or lower ");
@@ -96,7 +92,6 @@ namespace CleanCodeExamination.Controller
             {
                 TotGuesses++;
                 guess = _ui.Input();
-                _ui.Output(guess + "\n");
                 guessResult = guessGame.CheckGuess(goal, guess);
                 _ui.Output(guessResult + "\n");
             }
@@ -106,16 +101,16 @@ namespace CleanCodeExamination.Controller
             _ui.Output("Player   games average");
             foreach (PlayerData player in scoreBoard)
             {
-                _ui.Output(string.Format("{0,-9}{1,5:D}{2,9:F2}", player.Name, player.NGames, player.Average()));
+                _ui.Output(string.Format("{0,-9}{1,5:D}{2,9:F2}", player.Name, player.TotGames, player.Average()));
             }
         }
         private void PrintResult()
         {
-            _ui.Output($"Correct, it took {TotGuesses} guesses\nContinue? Press [Y/N]");
+            _ui.Output($"Correct! It took {TotGuesses} guesses\nContinue? Press [Y/N]");
         }
-        private bool ContinueOrExit(bool running)
+        private bool ContinueOrExit(bool run)
         {
-            return _ui.Exit(_ui.Input(), running);
+            return _ui.Exit(_ui.Input(), run);
         }
        
     }

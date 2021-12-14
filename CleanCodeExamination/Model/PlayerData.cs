@@ -5,25 +5,25 @@ namespace CleanCodeExamination
 	public class PlayerData
 	{
 		public string Name { get; private set; }
-		public int NGames { get; private set; }
-		int TotalGuess;
+		public int TotGames { get; private set; }
+		int TotalGuesses;
 
 		public PlayerData(string name, int guesses)
 		{
 			this.Name = name;
-			NGames = 1;
-			TotalGuess = guesses;
+			TotGames = 1;
+			TotalGuesses = guesses;
 		}
 
 		public void Update(int guesses)
 		{
-			TotalGuess += guesses;
-			NGames++;
+			TotalGuesses += guesses;
+			TotGames++;
 		}
 
 		public double Average()
 		{
-			return (double)TotalGuess / NGames;
+			return (double)TotalGuesses / TotGames;
 		}
 
 		public override bool Equals(Object p)

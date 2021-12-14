@@ -13,9 +13,9 @@ namespace MooGame
 		{
 			IUserInterface ui = new ConsoleIO();
 			IFileHandlerRepository fh = new FileHandlerRepository();
-			var guessGameBC = new BullsAndCows();
-			var guessGameHL = new HighOrLow();
-			GuessGameController controller = new(ui,fh,guessGameBC,guessGameHL);
+			var bullsAndCows = new BullsAndCows();
+			var higherOrLower = new HighOrLow();
+			GuessGameController controller = new(ui,fh,bullsAndCows,higherOrLower);
 			controller.Run();
 		}
 	}

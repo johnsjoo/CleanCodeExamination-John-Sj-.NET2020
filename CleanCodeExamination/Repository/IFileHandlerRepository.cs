@@ -4,7 +4,7 @@ namespace CleanCodeExamination.Repository
 {
     public interface IFileHandlerRepository
     {
-        void SavePlayerData(string name, int nGuess,string gametype);
+        void SavePlayerData(string name, int guesses,string gametype);
         List<PlayerData> ReadPlayerData(string gametype);
     }
 }
